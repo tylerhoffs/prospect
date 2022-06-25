@@ -1,0 +1,32 @@
+.button {
+  align-items: center;
+  border-radius: 1rem;
+  background-color: #9d3ef5;
+  color: #FFFFFF;
+  cursor: pointer;
+  display: flex;
+  font-size: 1.25rem;
+  font-weight: 500;
+  height: 2.5rem;
+  justify-content: center;
+  overflow: hidden;
+  padding: 0 2rem;
+  transition: font-size 0.2s ease-in;
+  &:hover {
+    
+  }
+  &:global(.black) {
+    background-color: #000000;
+    border: 2px solid #000000;
+    color: #FAF4F0;
+  }
+  &:global(.ghost) {
+    background-color: transparent;
+    border: 2px solid #9d3ef5;
+    color: #9d3ef5;
+  }
+  &:global(.big) {
+    height: 3.5rem;
+    font-size: 30px;
+  }
+}

@@ -1,0 +1,264 @@
+.container {
+  align-items: center;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  left: 0;
+  padding: 2rem;
+  position: fixed;
+  right: 0;
+  top: 0;
+  z-index: 999;
+}
+
+.containerTwo {
+  bottom: 0;
+  left: 0;
+  overflow: scroll;
+  padding: 3rem 1rem;
+  position: fixed;
+  right: 0;
+  top: 0;
+  z-index: 999;
+}
+
+.background {
+  background-color: rgba(0,0,0,0.5);
+  bottom: 0;
+  backdrop-filter: blur(4px);
+  left: 0;
+  overflow: scroll;
+  position: fixed;
+  right: 0;
+  top: 0;
+  z-index: 999;
+}
+
+.modal {
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.95);
+  box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
+  border-radius: 8px;
+  color: #FFFFFF;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin: 0 auto;
+  max-width: 900px;
+  max-height: 94vh;
+  padding: 1.5rem;
+  position: relative;
+  text-align: center;
+  z-index: 99999;
+
+  & h1 {
+    font-size: 3rem;
+    font-style: italic;
+    letter-spacing: -2px;
+    line-height: 1.15;
+    margin-top: 0;
+  }
+
+  & h3 {
+    margin: 0 0 0.5rem;
+    font-size: 1.5rem;
+    font-weight: 500;
+  }
+  
+  & p {
+    font-size: 1rem;
+    font-weight: 300;
+    margin: 0;
+    color: #b9b9b9;
+    & span {
+      font-family: finalsix, sans-serif;
+      font-weight: bolder;
+      color: #FFFFFF;
+    }
+  }
+
+  & a {
+    font-weight: bold;
+  }
+  & :global(.button) {
+    background-color: #fd10473b;
+    cursor: not-allowed;
+    font-size: 1.5rem;
+    font-family: finalsix, sans-serif;
+    font-weight: bolder;
+    height: 3rem;
+    margin-top: 2rem;
+    width: 10rem;
+  }
+  &__active {
+    & :global(.button) {
+      flex-shrink: 0;
+      cursor: pointer;
+      background-color: #FD1048;
+    }
+  }
+}
+
+.close {
+  cursor: pointer;
+  position: absolute;
+  right: 1rem;
+  top: 1rem;
+  & img {
+    width: 16px;
+    height: 20px;
+  }
+}
+
+.button {
+  background: #FFFFFF;
+  box-shadow: 0px 0px 0px 2px #413780;
+  border-radius: 4px;
+  cursor: pointer;
+  margin: 2rem 0 0 !important;
+  padding: 0.5rem 2rem;
+  width: fit-content;
+}
+
+.modalError {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  & p {
+    max-width: 480px;
+    margin: 0 auto;
+    text-align: center;
+  }
+  & h3 {
+    margin-top: 1rem;
+    text-align: center;
+  }
+}
+
+.modalReserve {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  & p {
+    margin-top: 0.5rem;
+    max-width: 340px;
+    text-align: center;
+  }
+  & h3 {
+    margin-top: 1rem;
+    text-align: center;
+  }
+}
+
+.twitter {
+  display: inline;
+  margin-right: 5px;
+}
+
+.choices {
+  display: flex;
+  margin: 2rem 0 1rem;
+  width: 100%;
+}
+
+.choice {
+  align-items: center;
+  background-color: #ffffff33;
+  border: 2px solid #ffffff81;
+  border-radius: 1rem;
+  cursor: pointer;
+  display: flex;
+  font-size: 1.5rem;
+  font-family: finalsix, sans-serif;
+  justify-content: center;
+  height: 3rem;
+  width: 100%;
+  &:hover {
+    background-color: #ffffff81;
+    font-weight: bolder;
+  }
+  & + .choice {
+    margin-left: 2rem;
+  }
+  &__selected {
+    background-color: #fd104727;
+    border-color: #FD1048;
+    color: #FD1048;
+    &:hover {
+      background-color: #fd104727;
+    }
+  }
+}
+
+.constellation {
+  align-items: center;
+  border-radius: 2rem;
+  display: flex;
+  justify-content: center;
+  margin-top: 2rem;
+  overflow: hidden;
+  height: 200px;
+  opacity: 1;
+  position: relative;
+  pointer-events: none;
+  width: 300px;
+  & img {
+    width: 400px;
+  }
+}
+
+@media (min-width: 600px) {
+  .close {
+    right: 1.5rem;
+    top: 1.5rem;
+    & img {
+      width: 26px;
+      height: 31px;
+    }
+  }
+
+  .containerTwo {
+    padding: 4rem 2rem;
+  }
+}
+
+@media (min-width: 950px) {
+  .modal {
+    padding: 2rem;
+    & h1 {
+      font-size: 2rem;
+    }
+    & h3 {
+      font-size: 2.5rem;
+    }   
+    & p {
+      font-size: 1.5rem;
+    }
+    & :global(.button) {
+      font-size: 2rem;
+      height: 4rem;
+      width: 15rem;
+    }
+  }
+  .choice {
+    font-size: 2rem;
+    height: 4rem;
+  }
+
+  .constellation {
+    height: 340px;
+    width: auto;
+    & img {
+      height: auto;
+      width: auto;
+    }
+  }
+}
+
+@media (max-height: 850px) {
+  .constellation {
+    position: absolute;
+    opacity: 0.4;
+  }
+}

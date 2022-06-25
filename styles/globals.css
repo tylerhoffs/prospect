@@ -1,0 +1,33 @@
+html {
+  background-color: #ac89ec;
+}
+
+html,
+body {
+  color: white;
+  font-family: finalsix, sans-serif;
+  padding: 0;
+  margin: 0;
+  /* background: #0e0e0e url("/bg.png"); */
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+#WEB3_CONNECT_MODAL_ID {
+  font-family: finalsix, sans-serif;
+}
+
+#gradient-canvas {
+  width:100%;
+  height:100%;
+  --gradient-color-1: #ac89ec; 
+  --gradient-color-2: #f58abe;  
+  --gradient-color-3: #f172a3;
+}

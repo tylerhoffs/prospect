@@ -1,0 +1,81 @@
+.main {
+  align-items: center;
+  color: #FFFFFF;
+  display: flex;
+  font-family: finalsix, sans-serif;
+  height: 5rem;
+  justify-content: center;
+  left: 0;
+  position: absolute;
+  padding: 0 2rem;
+  top: 0;
+  width: 100%;
+  z-index: 99;
+  & :global(.button) {
+    height: 2.2rem;
+    padding: 0 1.5rem;
+    font-size: 18px;
+  }
+}
+
+.container {
+  align-items: center;
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 3.5rem;
+  max-width: 1328px;
+  width: 100%;
+}
+
+.wallet {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.address {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.logo {
+  cursor: pointer;
+  font-size: 70px;
+  font-weight: bold;
+  width: 130px;
+}
+
+.timer {
+  display: none;
+  font-size: 1.5rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+
+@media (min-width: 500px) {
+  .logo {
+    cursor: pointer;
+    font-size: 70px;
+    font-weight: bold;
+    width: auto;
+  }  
+}
+@media (min-width: 650px) {
+  .wallet {
+    justify-content: flex-end;
+    margin-bottom: 0;
+    width: auto;
+  }
+  .address {
+    margin: 0 1rem 0 0;
+  }
+  .timer {
+    display: block;
+  }
+  .container {
+    margin-top: 2.5rem;
+    justify-content: space-between;
+  }
+}
