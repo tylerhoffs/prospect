@@ -43,7 +43,7 @@ export default function Home() {
         <p>find the diamonds in the rough. new creators are joining our platform daily looking to entertain. the earlier you discover a creator, the greater your potential is to earn.</p>
         <div className={styles.right}>
           <h1>support</h1>
-          <p>let creators know that you're enjoying their content by streaming a suscription fee directly to them. gain access to exclusive content and perks.</p>
+          <p>let creators know that you&apos;re enjoying their content by streaming a suscription fee directly to them. gain access to exclusive content and perks.</p>
         </div>
         <h1>earn</h1>
         <p>creators earn a steady stream of income so they feel comfortable constantly creating and fans earn loyalty tokens that can entitle them to a revenue share if staked and can also be used to buy exclusive creator nfts or merch.</p>

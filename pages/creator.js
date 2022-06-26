@@ -47,7 +47,7 @@ export default function Creator() {
             0x196...2399a
           </div>
           <div className={styles.bio}>
-            Hi, I'm Nancy and I create educational web3 content. Subscribe to my prospect to get behind the scenes content and early access to exclusive content.
+            Hi, I&apos;m Nancy and I create educational web3 content. Subscribe to my prospect to get behind the scenes content and early access to exclusive content.
           </div>
           <div className={styles.categories}>
             <div className={styles.category}>
