@@ -1,12 +1,12 @@
 .button {
   align-items: center;
-  border-radius: 1rem;
+  border-radius: 0.5rem;
   background-color: #9d3ef5;
   color: #FFFFFF;
   cursor: pointer;
   display: flex;
   font-size: 1.25rem;
-  font-weight: 500;
+  font-weight: 600;
   height: 2.5rem;
   justify-content: center;
   overflow: hidden;
@@ -28,5 +28,9 @@
   &:global(.big) {
     height: 3.5rem;
     font-size: 30px;
+  }
+  &:global(.small) {
+    height: 2rem;
+    font-size: 1rem;
   }
 }

@@ -6,6 +6,8 @@ import Footer from '../components/footer';
 import WalletContext from '../contexts/walletContext';
 import { useContext, useState, useRef, useEffect } from "react";
 import Button from '../components/button';
+import Card from '../components/card';
+import Nft from '../components/nft';
 import Loading from '../components/loading';
 import useInterval from "../utils/useInterval";
 import { contractAddress as contractAddress } from '../utils/contract-address.js'
@@ -18,6 +20,7 @@ export default function Creator() {
   const [loading, setLoading] = useState(false);
   const [selectedTab, setSelectedTab] = useState(0);
   const [revenue, setRevenue] = useState(232.032);
+  const [locked, setLocked] = useState(true);
   const { walletAddress, connectWallet, clearWallet } = useContext(WalletContext);
 
   useInterval(() => {
@@ -69,28 +72,39 @@ export default function Creator() {
               Stake
             </div>
             <div className={`${styles.tab} ${selectedTab == 2 ? styles.selected : ""}`} onClick={()=> setSelectedTab(2)}> 
-              Redeem
+              Engage
             </div>
           </div>
           <div className={`${styles.content} ${selectedTab == 0 ? styles.visible : ""}`}> 
-            <div className={styles.title}>
-              <Image src="/lock.svg" width="24" height="24"/>
-              <p>Content Locked</p>
-            </div>
-            <div className={styles.message}>
-              Connect a wallet that is already subscribed or start a subscription stream to unlock exclusive content and rewards from this creator!
-            </div>
-            <div className={styles.actions}>
-              {walletAddress !== undefined && walletAddress !== "" ? (
-                <>
-                  <Button text="Disconnect" onClick={() => {clearWallet.current()}} extraClasses="ghost small"/>
-                  <Button text="Subscribe" onClick={() => {}} extraClasses="small"/>
-                </>
-              ) : (
-                <Button text="Connect Wallet" onClick={() => {connectWallet.current()}}/>
-              )}
+            {locked ? (
+              <div className={styles.overlay}>
+                <div className={styles.title}>
+                  <Image src="/lock.svg" width="24" height="24"/>
+                  <p>Content Locked</p>
+                </div>
+                <div className={styles.message}>
+                  Connect a wallet that is already subscribed or start a subscription stream to unlock exclusive content and rewards from this creator!
+                </div>
+                <div className={styles.actions}>
+                  {walletAddress !== undefined && walletAddress !== "" ? (
+                    <>
+                      <Button text="Disconnect" onClick={() => {clearWallet.current()}} extraClasses="ghost small"/>
+                      <Button text="Subscribe" onClick={() => {setLocked(false)}} extraClasses="small"/>
+                    </>
+                  ) : (
+                    <Button text="Connect Wallet" onClick={() => {connectWallet.current()}}/>
+                  )}
+                </div>
+              </div>
+            ) : ("")}
+            <div className={styles.cards}>
+              <Card/>
+              <Card/>
+              <Card/>
+              <Card/>
             </div>
           </div>
+
           <div className={`${styles.content} ${selectedTab == 1 ? styles.visible : ""}`}> 
             <div className={styles.title}>
               <Image src="/stake.svg" width="24" height="24"/>
@@ -119,6 +133,24 @@ export default function Creator() {
               ) : (
                 <Button text="Connect Wallet" onClick={() => {connectWallet.current()}}/>
               )}
+            </div>
+          </div>
+
+          <div className={`${styles.content} ${selectedTab == 2 ? styles.visible : ""}`}> 
+            <div className={styles.title}>
+              <Image src="/money.svg" width="24" height="24"/>
+              <p>Spend Your Loyalty</p>
+            </div>
+            <div className={styles.message}>
+              Buy exclusive NFTs, merch and much more from your favourite creators!
+            </div>
+            <div className={styles.nfts}>
+              <Nft/>
+              <Nft/>
+            </div>
+            <div className={styles.nfts}>
+              <Nft/>
+              <Nft/>
             </div>
           </div>
         </div>

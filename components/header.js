@@ -11,7 +11,7 @@ export default function Header({ timeString }) {
   return (
     <div className={styles.main}>
       <div className={styles.container}>
-        <Link href="/"><Image src="/wordmark.svg" width="237" height="40"/></Link>
+        <Link href="/"><a><Image src="/wordmark.svg" width="237" height="40"/></a></Link>
         {walletAddress !== undefined && walletAddress !== "" ? (
           <div className={styles.wallet}>
             <div className={styles.address}>{walletAddress.slice(0,5)}...{walletAddress.slice(-5)}</div>
