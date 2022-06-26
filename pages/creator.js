@@ -32,12 +32,17 @@ export default function Creator() {
   const [subAmount, setSubAmount] = useState();
   const [streams, setStreams] = useState();
   const [tokens, setTokens] = useState();
+  const [revenue, setRevenue] = useState(232.032);
   const { walletAddress, connectWallet, clearWallet, walletObject, web3Modal } = useContext(WalletContext);
 
   const client = new ApolloClient({
     uri: "https://api.thegraph.com/subgraphs/name/superfluid-finance/protocol-v1-mumbai",
     cache: new InMemoryCache()
   });
+
+  useInterval(() => {
+    setRevenue(revenue + 0.001)
+  }, 10);
 
   const STREAMS_QUERY = gql`
   {
@@ -148,7 +153,7 @@ export default function Creator() {
     //CONTRACT INTERACTION
     //setLoading(true);
     const tokenContract = new walletObject.current.eth.Contract(tokenContractAbi, tokenContractAddress);
-    tokenContract.methods.send(stakingContractAddress,1,[]).send({from: walletAddress}).then((res) => {
+    tokenContract.methods.send(stakingContractAddress,1,[]).call({from: walletAddress}).then((res) => {
       console.log(res,"res");
       if (res.status == true) {
         console.log("TRUE")
@@ -303,13 +308,13 @@ export default function Creator() {
             </div>
             <div className={styles.stats}>
               <div className={styles.stat}>
-                Tokens Staked: <b></b>
+                Tokens Staked: <b>23233</b>
               </div>
               <div className={styles.stat}>
-                Revenue Earned: <b></b>
+                Revenue Earned: <b>${revenue.toFixed(3)}</b>
               </div>
               <div className={styles.stat}>
-                Tokens Owned: <b>{tokens ? parseFloat(ethers.utils.formatEther(tokens)).toFixed(7) : ""}</b>
+                Tokens Owned: <b>2344</b>
               </div>
             </div>
             <div className={styles.actions}>
