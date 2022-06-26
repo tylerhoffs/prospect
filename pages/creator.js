@@ -10,27 +10,215 @@ import Card from '../components/card';
 import Nft from '../components/nft';
 import Loading from '../components/loading';
 import useInterval from "../utils/useInterval";
-import { contractAddress as contractAddress } from '../utils/contract-address.js'
-import { contractAbi as contractAbi } from '../utils/contract-abi.js'
+import { contractAddress as creatorContractAddress } from '../utils/creator-contract-address.js'
+import { contractAbi as creatorContractAbi } from '../utils/creator-contract-abi.js'
+import { contractAddress as tokenContractAddress } from '../utils/token-contract-address.js'
+import { contractAbi as tokenContractAbi } from '../utils/token-contract-abi.js'
+import { contractAddress as stakingContractAddress } from '../utils/staking-contract-address.js'
+import { contractAbi as stakingContractAbi } from '../utils/staking-contract-abi.js'
 import Web3 from "web3";
 import useScript from "../utils/useScript";
+import { Framework } from "@superfluid-finance/sdk-core";
+import SubModal from '../components/subModal';
+import { ethers } from "ethers";
+import { gql, ApolloClient, InMemoryCache } from "@apollo/client";
 
 export default function Creator() {
   useScript('js/background-gradient.js');
-  const [loading, setLoading] = useState(false);
   const [selectedTab, setSelectedTab] = useState(0);
-  const [revenue, setRevenue] = useState(232.032);
   const [locked, setLocked] = useState(true);
-  const { walletAddress, connectWallet, clearWallet } = useContext(WalletContext);
+  const [loading, setLoading] = useState(false);
+  const [subModal, setSubModal] = useState(false);
+  const [subAmount, setSubAmount] = useState();
+  const [streams, setStreams] = useState();
+  const [tokens, setTokens] = useState();
+  const { walletAddress, connectWallet, clearWallet, walletObject, web3Modal } = useContext(WalletContext);
 
-  useInterval(() => {
-    setRevenue(revenue + 0.001)
-  }, 10);
+  const client = new ApolloClient({
+    uri: "https://api.thegraph.com/subgraphs/name/superfluid-finance/protocol-v1-mumbai",
+    cache: new InMemoryCache()
+  });
+
+  const STREAMS_QUERY = gql`
+  {
+    streams(where:{
+          sender: "${walletAddress}"
+          receiver: "${creatorContractAddress.toLowerCase()}"
+        }
+      ) {
+      token {
+        id
+        symbol
+      }
+      createdAtTimestamp
+      updatedAtTimestamp
+      currentFlowRate
+      streamedUntilUpdatedAt
+        }
+    }
+  `;
+
+  const closeModal = (event) => {
+    if(Array.from(event.target.classList).includes('closeModal')) {
+      setSubModal(false);
+    }
+  }
+
+  function calculateFlowRate(amountInEther) {
+    if (
+      typeof Number(amountInEther) !== "number" ||
+      isNaN(Number(amountInEther)) === true
+    ) {
+      console.log(typeof Number(amountInEther));
+      alert("You can only calculate a flowRate based on a number");
+      return;
+    } else if (typeof Number(amountInEther) === "number") {
+      const monthlyAmount = ethers.utils.parseEther(amountInEther.toString());
+      const calculatedFlowRate = Math.floor(monthlyAmount / 3600 / 24 / 30);
+      return calculatedFlowRate;
+    }
+  }
+
+  useEffect(() => {
+    console.log("streams");
+    console.log(streams);
+    let activeStream = false;
+
+    if(streams && streams.data.streams) {
+      streams.data.streams.forEach(stream => {
+        if(stream.currentFlowRate > 0) {
+          setLocked(false);
+        }
+      })
+    }
+    
+  }, [streams]);
+
+  useEffect(() => {
+    if (walletAddress) {
+
+      client.query({query: gql`
+      {
+        streams(where:{
+              sender: "${walletAddress.toLowerCase()}"
+              receiver: "${creatorContractAddress.toLowerCase()}"
+            }
+          ) {
+          token {
+            id
+            symbol
+          }
+          createdAtTimestamp
+          updatedAtTimestamp
+          currentFlowRate
+          streamedUntilUpdatedAt
+            }
+        }
+      `}).then(result => setStreams(result));
+
+      client.query({query: gql`
+      {
+        accounts(where: {
+          id: "${walletAddress.toLowerCase()}"
+          }) {
+          subscriptions{
+              index {
+                token{
+                  symbol
+                }
+              }
+              id
+              approved
+              units
+              totalAmountReceivedUntilUpdatedAt
+          }
+        }
+      }
+      `}).then(result => setTokens(result.data.accounts[0].subscriptions[0].units));
+
+
+
+      
+
+      
+    }
+  }, [walletAddress]);
+
+  async function stakeTokens() {
+    //CONTRACT INTERACTION
+    //setLoading(true);
+    const tokenContract = new walletObject.current.eth.Contract(tokenContractAbi, tokenContractAddress);
+    tokenContract.methods.send(stakingContractAddress,1,[]).send({from: walletAddress}).then((res) => {
+      console.log(res,"res");
+      if (res.status == true) {
+        console.log("TRUE")
+      }
+      setLoading(false);
+    }).catch(e => {
+      console.log(e);
+      setLoading(false);
+    });
+  }
+
+  async function createNewFlow() {
+    const recipient = creatorContractAddress;
+    const flowRate = calculateFlowRate(subAmount);
+    // const provider = walletObject.current;
+    // const signer = provider.getSigner();
+    const childProvider = await web3Modal.current.connect();
+    const provider = new ethers.providers.Web3Provider(childProvider);
+
+    const signer = provider.getSigner();
+
+    console.log("signer");
+    console.log(signer);
+  
+    const chainId = await window.ethereum.request({ method: "eth_chainId" });
+    const sf = await Framework.create({
+      chainId: Number(chainId),
+      provider: provider
+    });
+  
+    const DAIxContract = await sf.loadSuperToken("fDAIx");
+    const DAIx = DAIxContract.address;
+  
+    try {
+      const createFlowOperation = sf.cfaV1.createFlow({
+        receiver: recipient,
+        flowRate: flowRate,
+        superToken: DAIx
+        // userData?: string
+      });
+  
+      console.log("Creating your stream...");
+  
+      const result = await createFlowOperation.exec(signer);
+      console.log(result);
+  
+      console.log(
+        `Congrats - you've just created a money stream!
+      View Your Stream At: https://app.superfluid.finance/dashboard/${recipient}
+      Network: Kovan
+      Super Token: DAIx
+      Sender: ${signer}
+      Receiver: ${recipient},
+      FlowRate: ${flowRate}
+      `
+      );
+      setSubModal(false);
+      setLocked(false);
+    } catch (error) {
+      console.log(
+        "Hmmm, your transaction threw an error. Make sure that this stream does not already exist, and that you've entered a valid Ethereum address!"
+      );
+      console.error(error);
+    }
+  }
 
   return (
     <div className={styles.container}>
       <Head>
-        <title>creator page</title>
+        <title>Prospect - Nancy Sinatra</title>
         <meta name="description" content="Discover • Support • Earn" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
@@ -89,7 +277,7 @@ export default function Creator() {
                   {walletAddress !== undefined && walletAddress !== "" ? (
                     <>
                       <Button text="Disconnect" onClick={() => {clearWallet.current()}} extraClasses="ghost small"/>
-                      <Button text="Subscribe" onClick={() => {setLocked(false)}} extraClasses="small"/>
+                      <Button text="Subscribe" onClick={() => {setSubModal(true)}} extraClasses="small"/>
                     </>
                   ) : (
                     <Button text="Connect Wallet" onClick={() => {connectWallet.current()}}/>
@@ -115,20 +303,20 @@ export default function Creator() {
             </div>
             <div className={styles.stats}>
               <div className={styles.stat}>
-                Tokens Staked: <b>23233</b>
+                Tokens Staked: <b></b>
               </div>
               <div className={styles.stat}>
-                Revenue Earned: <b>${revenue.toFixed(3)}</b>
+                Revenue Earned: <b></b>
               </div>
               <div className={styles.stat}>
-                Tokens Owned: <b>2344</b>
+                Tokens Owned: <b>{tokens ? parseFloat(ethers.utils.formatEther(tokens)).toFixed(7) : ""}</b>
               </div>
             </div>
             <div className={styles.actions}>
               {walletAddress !== undefined && walletAddress !== "" ? (
                 <>
                   <Button text="Unstake" onClick={() => {clearWallet.current()}} extraClasses="ghost small"/>
-                  <Button text="Stake" onClick={() => {}} extraClasses="small"/>
+                  <Button text="Stake" onClick={stakeTokens} extraClasses="small"/>
                 </>
               ) : (
                 <Button text="Connect Wallet" onClick={() => {connectWallet.current()}}/>
@@ -160,7 +348,8 @@ export default function Creator() {
 
       <div className={styles.static}></div>
       <canvas id="gradient-canvas" className={styles.grad} data-transition-in></canvas>
-
+      
+      {subModal ? <SubModal closeModal={closeModal} subAmount={subAmount} setSubAmount={setSubAmount} createNewFlow={createNewFlow}/> : null}
       {loading ? <Loading /> : null}
     </div>
   )

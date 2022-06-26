@@ -8,10 +8,11 @@ import { useContext, useState, useRef, useEffect } from "react";
 import Button from '../components/button';
 import Loading from '../components/loading';
 import useInterval from "../utils/useInterval";
-import { contractAddress as contractAddress } from '../utils/contract-address.js'
-import { contractAbi as contractAbi } from '../utils/contract-abi.js'
+import { contractAddress as contractAddress } from '../utils/creator-contract-address.js'
+import { contractAbi as contractAbi } from '../utils/creator-contract-abi.js'
 import Web3 from "web3";
 import useScript from "../utils/useScript";
+import Link from 'next/link'
 
 export default function Home() {
   useScript('js/background-gradient.js');
@@ -19,7 +20,7 @@ export default function Home() {
   return (
     <div className={styles.container}>
       <Head>
-        <title>prospect</title>
+        <title>Prospect</title>
         <meta name="description" content="Discover • Support • Earn" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
@@ -39,7 +40,7 @@ export default function Home() {
       </main>
 
       <div className={styles.section}>
-        <h1>discover</h1>
+        <Link href="/creator"><h1>discover</h1></Link>
         <p>find the diamonds in the rough. new creators are joining our platform daily looking to entertain. the earlier you discover a creator, the greater your potential is to earn.</p>
         <div className={styles.right}>
           <h1>support</h1>

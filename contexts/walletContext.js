@@ -9,6 +9,7 @@ export const WalletProvider = ({ children }) => {
   const connectWallet = useRef(null);
   const clearWallet = useRef(null);
   const walletObject = useRef(null);
+  const web3Modal = useRef(null);
 
   const [walletAddress, setWalletAddress] = useState();
 
@@ -22,8 +23,8 @@ export const WalletProvider = ({ children }) => {
       }
     };
     
-    const web3Modal = new Web3Modal({
-      network: "mainnet", //optional
+    web3Modal.current = new Web3Modal({
+      //network: "mainnet", //optional
       cacheProvider: true, // optional
       providerOptions // required
     });
@@ -32,7 +33,7 @@ export const WalletProvider = ({ children }) => {
   
     connectWallet.current = async () => {
       console.log("connect wallet")
-      const provider = await web3Modal.connect();
+      const provider = await web3Modal.current.connect();
       walletObject.current = new Web3(provider);
       //walletObject.current = new Web3("http://127.0.0.1:8545/"); //LOCALHOST
       
@@ -52,18 +53,18 @@ export const WalletProvider = ({ children }) => {
       if (walletObject.current && walletObject.current.currentProvider && walletObject.current.currentProvider.close) {
         await walletObject.current.currentProvider.close();
       }
-      await web3Modal.clearCachedProvider();
+      await web3Modal.current.clearCachedProvider();
       setWalletAddress(undefined);
     };  
 
-    if (web3Modal.cachedProvider) {
+    if (web3Modal.current.cachedProvider) {
       console.log("Cached Provider")
       connectWallet.current();
     }
   }, []);
 
   return (
-    <WalletContext.Provider value={{walletAddress, connectWallet, clearWallet, walletObject}}>
+    <WalletContext.Provider value={{walletAddress, connectWallet, clearWallet, walletObject, web3Modal}}>
       {children}
     </WalletContext.Provider>
   );

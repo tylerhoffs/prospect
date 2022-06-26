@@ -1,7 +1,7 @@
 import styles from '../styles/Footer.module.scss'
 import Button from './button'
 import Image from 'next/image'
-import { contractAddress } from '../utils/contract-address.js'
+import { contractAddress } from '../utils/creator-contract-address.js'
 
 export default function Footer() {
   return (
